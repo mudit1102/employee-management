@@ -24,8 +24,8 @@ dependencies {
 	implementation 'io.springfox:springfox-swagger-ui:2.7.0'
 	implementation 'org.apache.commons:commons-lang3:3.7'
 	implementation 'org.springframework.data:spring-data-jpa'
-	implementation 'com.h2database:h2:1.4.199'
-	implementation 'javax.persistence:persistence-api:1.0'
+	implementation 'mysql:mysql-connector-java'
+	implementation 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

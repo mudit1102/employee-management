@@ -1,15 +1,17 @@
 package com.work.management.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name="EMPLOYEES")
 public class Employees {
     private String firstName;
     private String lastName;
     private String userName;
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
     private Integer manager;
     private String teamID;
@@ -18,6 +20,9 @@ public class Employees {
     private Date lastUpdatedTimeStamp;
     private Integer lastUpdatedBy;
     private Integer createdBy;
+
+    public Employees() {
+    }
 
     public String getFirstName() {
         return firstName;
@@ -31,8 +36,6 @@ public class Employees {
         return userName;
     }
 
-    @Id
-    @GeneratedValue
     public Integer getId() {
         return id;
     }

@@ -24,7 +24,7 @@ public class EmployeeRegistrationService implements DataPersistingService<Employ
 
     @Override
     public EmployeeResource preHandle(EmployeeResource document) {
-        logger.info("PreHandling employee{} ", document.getFirstName() + " " + document.getLastName());
+        logger.info("PreHandling employee{} ", document.getFirstName() + "." + document.getLastName());
         if(Objects.nonNull(employeeRepository.findByPhoneNumber(document.getPhoneNumber()))){
             ExceptionUtils.throwEntityAlreadyExistsException("Employee already exists, choose a different phone Number");
         }
@@ -50,6 +50,7 @@ public class EmployeeRegistrationService implements DataPersistingService<Employ
 
     @Override
     public void postHandle(Employees document) {
-
+        logger.info("postHandling employee{} ", document.getFirstName() + " " + document.getLastName());
+        employeeRepository.save(document);
     }
 }
