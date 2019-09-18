@@ -1,6 +1,6 @@
 package com.work.management.exceptions;
 
-public class EntityAlreadyExistsException extends RuntimeException{
+public final class EntityAlreadyExistsException extends RuntimeException{
 
     public EntityAlreadyExistsException() {
         super();

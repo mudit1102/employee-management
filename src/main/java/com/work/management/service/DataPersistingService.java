@@ -1,7 +1,5 @@
 package com.work.management.service;
 
-import com.work.management.resource.ProjectResource;
-
 public interface DataPersistingService<T,V> {
 
     public T preHandle(T document);

@@ -1,16 +1,13 @@
 package com.work.management.repository;
 
-import com.work.management.entity.Employees;
-import com.work.management.entity.Projects;
+import com.work.management.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface EmployeeRepository extends JpaRepository<Employees,Integer> {
-    Optional<Employees> findById(Integer id);
-    Optional<Employees> findByPhoneNumber(String phoneNumber);
-    Optional<Employees> findByUserName(String userName);
+
+public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
+    Optional<Employee> findById(Integer id);
+    Optional<Employee> findByPhoneNumber(String phoneNumber);
+    Optional<Employee> findByUserName(String userName);
 }

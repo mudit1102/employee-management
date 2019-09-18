@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/restdb
+    username: root
+    password: dtu@1234
+  jpa:
+    hibernate.ddl-auto: create
+    generate-ddl: true
+    show-sql: true

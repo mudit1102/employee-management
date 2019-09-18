@@ -1,7 +1,7 @@
-package com.work.management.controller;
+package com.work.management.web.rest.controller;
 
-import com.work.management.resource.EmployeeResource;
-import com.work.management.service.impl.EmployeeRegistrationService;
+import com.work.management.web.rest.resource.EmployeeResource;
+import com.work.management.service.impl.EmployeeService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +16,19 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "workmanagement/v1/employees")
-public class EmployeeRegisterController {
+public final class EmployeeController {
+
+
+    private final EmployeeService employeeRegistrationService;
 
     @Autowired
-    private EmployeeRegistrationService employeeRegistrationService;
+    public EmployeeController(EmployeeService employeeRegistrationService) {
+        this.employeeRegistrationService = employeeRegistrationService;
+    }
 
-
-    @RequestMapping(method = RequestMethod.POST,value = "/",produces = "application/json; charset=UTF-8")
+    @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json; charset=UTF-8")
     @ApiOperation(value = "Create a project")
-    public ResponseEntity<EmployeeResource> registerEmployee(@Valid @RequestBody @ApiParam("Project Entity")EmployeeResource employeeResource){
+    public ResponseEntity<EmployeeResource> registerEmployee(@Valid @RequestBody @ApiParam("Project Entity") EmployeeResource employeeResource) {
         employeeRegistrationService.process(employeeResource);
         return new ResponseEntity<>(employeeResource, HttpStatus.CREATED);
     }
