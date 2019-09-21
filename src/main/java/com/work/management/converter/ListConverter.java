@@ -1,22 +1,25 @@
 package com.work.management.converter;
 
+import com.google.common.collect.ImmutableList;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.Arrays;
 import java.util.List;
 
 @Converter
-public class ListConverter implements AttributeConverter<List<String>,String> {
-    private static final String SPLIT_CHAR = ";";
+public final class ListConverter implements AttributeConverter<List<String>, String> {
+
+    private static final String delimiter = ";";
 
     @Override
     public String convertToDatabaseColumn(List<String> list) {
 
-        return String.join(SPLIT_CHAR,list);
+        return String.join(delimiter, list);
     }
 
     @Override
-    public List<String> convertToEntityAttribute(String string) {
-        return Arrays.asList(string.split(SPLIT_CHAR));
+    public ImmutableList<String> convertToEntityAttribute(String string) {
+
+        return ImmutableList.copyOf(string.split(delimiter));
     }
 }

@@ -5,18 +5,22 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 
-@Builder
+
 @Entity
 @Table(name = "EMPLOYEES")
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-public class Employee {
+@EqualsAndHashCode
+public final class Employee {
 
     @Column(name = "firstName")
     private String firstName;
+
     @Column(name = "lastName")
     private String lastName;
+
     @Column(name = "userName")
     private String userName;
 
@@ -24,20 +28,26 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
+
     @Column(name = "manager")
     private Integer manager;
+
     @Column(name = "teamId")
-    private String teamID;
+    private String teamId;
+
     @Column(name = "phoneNumber")
     private String phoneNumber;
+
     @Column(name = "createdAtTimeStamp")
     private Date createdAtTimeStamp;
+
     @Column(name = "lastUpdatedTimeStamp")
     private Date lastUpdatedTimeStamp;
+
     @Column(name = "lastUpdatedBy")
     private Integer lastUpdatedBy;
+
     @Column(name = "createdBy")
     private Integer createdBy;
-
 
 }

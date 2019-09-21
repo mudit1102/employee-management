@@ -4,7 +4,8 @@ import com.work.management.exceptions.BadRequestException;
 import com.work.management.exceptions.EntityAlreadyExistsException;
 import com.work.management.exceptions.EntityNotFoundException;
 
-public class ExceptionUtils {
+public final class ExceptionUtils {
+
     public static void throwEntityAlreadyExistsException(String message) {
         throw new EntityAlreadyExistsException(message);
     }

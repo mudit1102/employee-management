@@ -1,6 +1,7 @@
 package com.work.management.exceptions;
 
-public final class BadRequestException extends RuntimeException{
+public final class BadRequestException extends RuntimeException {
+
     public BadRequestException() {
         super();
     }
