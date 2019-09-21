@@ -1,6 +1,6 @@
 package com.work.management.exceptions;
 
-public final class EntityNotFoundException extends RuntimeException{
+public final class EntityNotFoundException extends RuntimeException {
 
     public EntityNotFoundException() {
         super();

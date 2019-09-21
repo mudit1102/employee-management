@@ -10,12 +10,12 @@ import java.util.List;
  * This class represents a single row in Projects Table.
  */
 
-@Entity
-@Table(name = "PROJECTS")
 @Data
 @Builder
 @AllArgsConstructor
-@EqualsAndHashCode
+@NoArgsConstructor
+@Entity
+@Table(name = "PROJECTS")
 public final class Project {
 
     @Column(name = "name")

@@ -7,19 +7,17 @@ import javax.persistence.Converter;
 import java.util.List;
 
 @Converter
-public final class ListConverter implements AttributeConverter<List<String>, String> {
+public final class ListConverter implements AttributeConverter<ImmutableList<String>, String> {
 
-    private static final String delimiter = ";";
+    private static final String DELIMITER = ";";
 
     @Override
-    public String convertToDatabaseColumn(List<String> list) {
-
-        return String.join(delimiter, list);
+    public String convertToDatabaseColumn(ImmutableList<String> attribute) {
+        return String.join(DELIMITER, attribute);
     }
 
     @Override
     public ImmutableList<String> convertToEntityAttribute(String string) {
-
-        return ImmutableList.copyOf(string.split(delimiter));
+        return ImmutableList.copyOf(string.split(DELIMITER));
     }
 }

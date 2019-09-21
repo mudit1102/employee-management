@@ -1,13 +1,12 @@
-package com.work.management.entity;
+package com.work.management.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-
 import java.util.Date;
 
-@EqualsAndHashCode
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -15,11 +14,10 @@ import java.util.Date;
 public final class ProjectDto {
 
     String name;
+    String id;
     Integer owner;
     Date startDate;
     Date endDate;
-    Date createdAtTimeStamp;
-    Date lastUpdatedTimeStamp;
     Integer lastUpdatedBy;
     Integer createdBy;
 }

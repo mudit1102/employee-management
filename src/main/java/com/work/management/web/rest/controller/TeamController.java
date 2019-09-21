@@ -1,7 +1,9 @@
 package com.work.management.web.rest.controller;
 
+import com.work.management.dto.TeamDto;
 import com.work.management.entity.Team;
-import com.work.management.service.DataPersistingService;
+import com.work.management.service.team.TeamService;
+import com.work.management.web.rest.assembler.TeamAssembler;
 import com.work.management.web.rest.resource.TeamResource;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +18,19 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "workmanagement/v1/teams")
-public final class TeamController {
+final class TeamController {
 
-    private final DataPersistingService<TeamResource, Team> dataPersistingService;
+    private final TeamService<TeamDto, Team> teamService;
 
     @Autowired
-    public TeamController(DataPersistingService dataPersistingService) {
-        this.dataPersistingService = dataPersistingService;
+    TeamController(TeamService teamService) {
+        this.teamService = teamService;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/", produces = "application/json; charset=UTF-8")
     @ApiOperation(value = "Create a team")
     public ResponseEntity<TeamResource> registerTeams(@Valid @RequestBody TeamResource teamResource) {
-        dataPersistingService.process(teamResource);
+        teamService.save(TeamAssembler.convert(teamResource));
         return new ResponseEntity<>(teamResource, HttpStatus.CREATED);
     }
 }

@@ -1,18 +1,19 @@
 package com.work.management.entity;
 
+import com.google.common.collect.ImmutableList;
 import com.work.management.converter.ListConverter;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 
-@Entity
-@Table(name = "TEAMS")
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "TEAMS")
 public final class Team {
 
     @Column(name = "name")
@@ -40,6 +41,6 @@ public final class Team {
 
     @Convert(converter = ListConverter.class)
     @Column(name = "employeeIds")
-    private List<String> employeeIds;
+    private ImmutableList<String> employeeIds;
 
 }
