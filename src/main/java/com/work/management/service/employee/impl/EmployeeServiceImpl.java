@@ -33,8 +33,6 @@ final class EmployeeServiceImpl implements EmployeeService {
     Employee employee = new Employee();
     BeanUtils.copyProperties(employeeDto, employee);
     employee.setUserName(employeeDto.getFirstName() + "." + employeeDto.getLastName());
-    employee.setCreatedBy(employeeDto.getManager());
-    employee.setLastUpdatedBy(employeeDto.getManager());
 
     employeeRepository.save(employee);
   }

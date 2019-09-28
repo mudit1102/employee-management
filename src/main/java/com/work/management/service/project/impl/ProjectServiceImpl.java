@@ -35,8 +35,6 @@ final class ProjectServiceImpl implements ProjectService {
 
     Project project = new Project();
     BeanUtils.copyProperties(projectDto, project);
-    project.setCreatedBy(projectDto.getOwner());
-    project.setLastUpdatedBy(projectDto.getOwner());
 
     projectRepository.save(project);
   }

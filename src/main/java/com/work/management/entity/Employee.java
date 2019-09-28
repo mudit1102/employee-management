@@ -3,6 +3,7 @@ package com.work.management.entity;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Data
 @Builder
@@ -20,6 +22,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "EMPLOYEES")
+@EntityListeners(AuditingEntityListener.class)
 public final class Employee {
 
   @Column(name = "firstName")

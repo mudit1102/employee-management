@@ -32,8 +32,6 @@ final class TeamServiceImpl implements TeamService {
 
     Team team = new Team();
     BeanUtils.copyProperties(teamDto, team);
-    team.setCreatedBy(teamDto.getManager());
-    team.setLastUpdatedBy(teamDto.getManager());
 
     teamRepository.save(team);
   }
