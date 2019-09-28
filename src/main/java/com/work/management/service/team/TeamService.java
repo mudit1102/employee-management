@@ -1,5 +1,8 @@
 package com.work.management.service.team;
 
-public interface TeamService<TeamDto, Team> {
-    void save(TeamDto document);
+import com.work.management.dto.TeamDto;
+
+public interface TeamService {
+
+  void save(TeamDto document);
 }

@@ -1,7 +1,6 @@
 package com.work.management.service.employee;
 
-import com.work.management.dto.EmployeeDto;
+public interface EmployeeService {
 
-public interface EmployeeService<EmployeeDto, Employee> {
-    void save(com.work.management.dto.EmployeeDto document);
+  void save(com.work.management.dto.EmployeeDto document);
 }

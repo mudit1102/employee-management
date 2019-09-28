@@ -2,11 +2,10 @@ package com.work.management.web.rest.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
-
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -15,9 +14,9 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public final class ProjectResource {
 
-    private String name;
-    private Integer owner;
-    private Date startDate;
-    private Date endDate;
+  private String name;
+  private Integer owner;
+  private Date startDate;
+  private Date endDate;
 
 }
