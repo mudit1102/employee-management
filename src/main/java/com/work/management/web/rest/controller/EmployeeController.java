@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("workmanagement/v1/employees")
+@RequestMapping("/workmanagement/v1/employees")
 final class EmployeeController {
 
   private final EmployeeService employeeService;
@@ -26,9 +26,9 @@ final class EmployeeController {
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "/register", produces = "application/json; charset=UTF-8")
-  @ApiOperation(value = "Create a project")
-  public ResponseEntity<EmployeeResource> registerEmployee(
-      @Valid @RequestBody @ApiParam("Project Entity") EmployeeResource employeeResource) {
+  @ApiOperation(value = "Create an Employee", response = EmployeeResource.class)
+  ResponseEntity<EmployeeResource> registerEmployee(
+      @Valid @RequestBody @ApiParam(value = "Employee Entity", required = true) EmployeeResource employeeResource) {
     employeeService.save(EmployeeAssembler.convert(employeeResource));
     return new ResponseEntity<>(employeeResource, HttpStatus.CREATED);
   }
