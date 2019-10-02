@@ -38,9 +38,7 @@ final class EmployeeController {
   @ApiOperation(value = "Get an employee by its user name", response = EmployeeResource.class)
   ResponseEntity<EmployeeResource> getEmployeeByUserName(
       @Valid @ApiParam(value = "User Name", required = true) @PathVariable("userName") String userName) {
-
-    EmployeeResource employeeResource = EmployeeAssembler
-        .convert(employeeService.getEmployeeByUserName(userName));
-    return new ResponseEntity<>(employeeResource, HttpStatus.OK);
+    return new ResponseEntity<>(
+        EmployeeAssembler.convert(employeeService.getEmployeeByUserName(userName)), HttpStatus.OK);
   }
 }
