@@ -12,4 +12,10 @@ public final class EmployeeAssembler {
     return employeeDto;
 
   }
+
+  public static EmployeeResource convert(EmployeeDto employeeDto) {
+    EmployeeResource employeeResource = new EmployeeResource();
+    BeanUtils.copyProperties(employeeDto, employeeResource);
+    return employeeResource;
+  }
 }

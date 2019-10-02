@@ -1,5 +1,9 @@
 package com.work.management.exceptions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(value = HttpStatus.CONFLICT)
 public final class EntityAlreadyExistsException extends RuntimeException {
 
   public EntityAlreadyExistsException() {
