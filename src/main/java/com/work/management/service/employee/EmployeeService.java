@@ -4,7 +4,7 @@ import com.work.management.dto.EmployeeDto;
 
 public interface EmployeeService {
 
-  void save(EmployeeDto document);
+  void save(EmployeeDto employeeDto);
 
   EmployeeDto getEmployeeByUserName(String username);
 }
