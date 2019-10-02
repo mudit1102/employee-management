@@ -51,4 +51,19 @@ final class EmployeeServiceImpl implements EmployeeService {
     BeanUtils.copyProperties(employee.get(), employeeDto);
     return employeeDto;
   }
+
+  @Override
+  public EmployeeDto updateEmployeeEntity(EmployeeDto employeeDto) {
+    Optional<Employee> employee = employeeRepository.findById(employeeDto.getId());
+    if (!employee.isPresent()) {
+      ExceptionUtils
+          .throwEntityNotFoundException(
+              String
+                  .format("Employee with Id %d doesn't exists.", employeeDto.getId()));
+    }
+
+    BeanUtils.copyProperties(employeeDto, employee.get());
+    employeeRepository.save(employee.get());
+    return employeeDto;
+  }
 }

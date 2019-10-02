@@ -41,4 +41,12 @@ final class EmployeeController {
     return new ResponseEntity<>(
         EmployeeAssembler.convert(employeeService.getEmployeeByUserName(userName)), HttpStatus.OK);
   }
+
+  @RequestMapping(method = RequestMethod.PUT, value = "/update", produces = "application/json; charset=UTF-8")
+  @ApiOperation(value = "Update existing employee entity", response = EmployeeResource.class)
+  ResponseEntity<EmployeeResource> updateEmployeeEntity(
+      @Valid @RequestBody @ApiParam(value = "Update employee entity", required = true) EmployeeResource employeeResource) {
+    employeeService.updateEmployeeEntity(EmployeeAssembler.convert(employeeResource));
+    return new ResponseEntity<>(employeeResource, HttpStatus.OK);
+  }
 }
