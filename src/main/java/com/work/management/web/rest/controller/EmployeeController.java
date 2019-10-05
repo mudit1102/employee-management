@@ -2,9 +2,7 @@ package com.work.management.web.rest.controller;
 
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.web.rest.assembler.EmployeeAssembler;
-import com.work.management.web.rest.resource.BulkEmployeeRequest;
 import com.work.management.web.rest.resource.EmployeeResource;
-import com.work.management.web.rest.resource.EmployeeResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import javax.validation.Valid;
@@ -37,31 +35,18 @@ final class EmployeeController {
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/{userName}", produces = "application/json; charset=UTF-8")
-  @ApiOperation(value = "Get an employee by its user name", response = EmployeeResponse.class)
-  ResponseEntity<EmployeeResponse> getEmployeeByUserName(
+  @ApiOperation(value = "Get an employee by its user name", response = EmployeeResource.class)
+  ResponseEntity<EmployeeResource> getEmployeeByUserName(
       @Valid @ApiParam(value = "User Name", required = true) @PathVariable("userName") String userName) {
     return new ResponseEntity<>(
-        EmployeeAssembler.convert(employeeService.getEmployeeByUserName(userName)),
-        HttpStatus.OK);
+        EmployeeAssembler.convert(employeeService.getEmployeeByUserName(userName)), HttpStatus.OK);
   }
 
   @RequestMapping(method = RequestMethod.PUT, value = "/update", produces = "application/json; charset=UTF-8")
-  @ApiOperation(value = "Update existing employee entity", response = EmployeeResponse.class)
-  ResponseEntity<EmployeeResponse> updateEmployeeEntity(
+  @ApiOperation(value = "Update existing employee entity", response = EmployeeResource.class)
+  ResponseEntity<EmployeeResource> updateEmployeeEntity(
       @Valid @RequestBody @ApiParam(value = "Update employee entity", required = true) EmployeeResource employeeResource) {
-    return new ResponseEntity<>(EmployeeAssembler.convert(
-        employeeService
-            .updateEmployeeEntity(EmployeeAssembler.convert(employeeResource))),
-        HttpStatus.OK);
+    employeeService.updateEmployeeEntity(EmployeeAssembler.convert(employeeResource));
+    return new ResponseEntity<>(employeeResource, HttpStatus.OK);
   }
-
-  @RequestMapping(method = RequestMethod.PUT, value = "/bulkUpdate", produces = "application/json; charset=UTF-8")
-  @ApiOperation(value = "Update multiple employee entity", response = BulkEmployeeRequest.class)
-  ResponseEntity<BulkEmployeeRequest> bulkUpdate(
-      @Valid @RequestBody @ApiParam(value = "Update employee entity", required = true)
-          BulkEmployeeRequest bulkEmployeeApiRequest) {
-    employeeService.bulkEmployeeUpdate(EmployeeAssembler.convert(bulkEmployeeApiRequest));
-    return new ResponseEntity<>(bulkEmployeeApiRequest, HttpStatus.OK);
-  }
-
 }
