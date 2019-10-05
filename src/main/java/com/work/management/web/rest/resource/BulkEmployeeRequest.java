@@ -2,6 +2,8 @@ package com.work.management.web.rest.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,15 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public final class EmployeeResource {
+public class BulkEmployeeRequest {
 
-  private String firstName;
-  private String lastName;
-  private String userName;
-  private Integer id;
-  private Integer manager;
-  private String teamId;
-  private String phoneNumber;
-  private Integer lastUpdatedBy;
-  private Integer createdBy;
+  private List<Integer> employeeId;
+  private Map<AcceptedFields, String> acceptedFieldsValueMap;
 }
