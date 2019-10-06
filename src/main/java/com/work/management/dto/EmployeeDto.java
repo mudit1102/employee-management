@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -19,6 +18,7 @@ public final class EmployeeDto {
   private String firstName;
   private String lastName;
   private String userName;
+  private Integer id;
   private Integer manager;
   private String teamId;
   private String phoneNumber;

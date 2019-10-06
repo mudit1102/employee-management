@@ -1,10 +1,8 @@
-package com.work.management.dto;
+package com.work.management.web.rest.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Date;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,12 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public final class ProjectDto {
+public class EmployeeResponse {
 
-  String name;
-  Integer owner;
-  Date startDate;
-  Date endDate;
-  Integer lastUpdatedBy;
-  Integer createdBy;
+  private String firstName;
+  private String lastName;
+  private String userName;
+  private Integer id;
+  private Integer manager;
+  private String teamId;
+  private String phoneNumber;
 }
