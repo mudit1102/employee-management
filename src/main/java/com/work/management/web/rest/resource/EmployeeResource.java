@@ -20,6 +20,5 @@ public final class EmployeeResource {
   private Integer manager;
   private String teamId;
   private String phoneNumber;
-  private Integer lastUpdatedBy;
-  private Integer createdBy;
+
 }

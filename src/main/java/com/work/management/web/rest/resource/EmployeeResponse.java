@@ -20,6 +20,4 @@ public class EmployeeResponse {
   private Integer manager;
   private String teamId;
   private String phoneNumber;
-  private Integer lastUpdatedBy;
-  private Integer createdBy;
 }
