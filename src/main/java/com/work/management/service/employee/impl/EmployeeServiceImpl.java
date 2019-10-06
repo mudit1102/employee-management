@@ -24,19 +24,18 @@ final class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public EmployeeDto save(EmployeeDto employeeDto) {
+  public void save(EmployeeDto employeeDto) {
     if (employeeRepository.findByPhoneNumber(employeeDto.getPhoneNumber()).isPresent()) {
       ExceptionUtils.throwEntityAlreadyExistsException(
           "Employee already exists, choose a different phone Number");
+      return;
     }
 
     Employee employee = new Employee();
     BeanUtils.copyProperties(employeeDto, employee);
+    employee.setUserName(employeeDto.getFirstName() + "." + employeeDto.getLastName());
 
     employeeRepository.save(employee);
-
-    BeanUtils.copyProperties(employee, employeeDto);
-    return employeeDto;
   }
 
   @Override
@@ -52,35 +51,4 @@ final class EmployeeServiceImpl implements EmployeeService {
     BeanUtils.copyProperties(employee.get(), employeeDto);
     return employeeDto;
   }
-
-  @Override
-  public EmployeeDto updateEmployeeEntity(EmployeeDto employeeDto) {
-    Optional<Employee> employee = employeeRepository.findById(employeeDto.getId());
-    if (!employee.isPresent()) {
-      ExceptionUtils
-          .throwEntityNotFoundException(
-              String
-                  .format("Employee with Id %d doesn't exists.", employeeDto.getId()));
-    }
-
-    Employee oldEmployee = employee.get();
-    if (employeeDto.getUserName() != null && !employeeDto.getUserName()
-        .equals(oldEmployee.getUserName()) || employeeDto.getId() != null && !employeeDto.getId()
-        .equals(oldEmployee.getId())) {
-      ExceptionUtils.throwBadRequestException("Cannot update username or id");
-    }
-    Employee newEmployee = new Employee();
-    BeanUtils.copyProperties(employeeDto, newEmployee);
-    newEmployee.setUserName(oldEmployee.getUserName());
-    newEmployee.setId(oldEmployee.getId());
-
-    employeeRepository.save(newEmployee);
-
-    EmployeeDto newEmployeeDto = new EmployeeDto();
-    BeanUtils.copyProperties(newEmployee, newEmployeeDto);
-    return newEmployeeDto;
-  }
-
-
 }
-
