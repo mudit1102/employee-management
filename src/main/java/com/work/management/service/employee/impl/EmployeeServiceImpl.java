@@ -11,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-final class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
   private final EmployeeRepository employeeRepository;
@@ -54,6 +56,7 @@ final class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   public EmployeeDto updateEmployeeEntity(EmployeeDto employeeDto) {
     Optional<Employee> employee = employeeRepository.findById(employeeDto.getId());
     if (!employee.isPresent()) {
