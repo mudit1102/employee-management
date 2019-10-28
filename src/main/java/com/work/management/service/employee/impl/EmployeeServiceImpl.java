@@ -57,7 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
+  @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
   public EmployeeDto updateEmployeeEntity(EmployeeDto employeeDto) {
     Optional<Employee> employee = employeeRepository.findById(employeeDto.getId());
     if (!employee.isPresent()) {
