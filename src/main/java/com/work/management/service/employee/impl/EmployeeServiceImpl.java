@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService {
+class EmployeeServiceImpl implements EmployeeService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
   private final EmployeeRepository employeeRepository;
