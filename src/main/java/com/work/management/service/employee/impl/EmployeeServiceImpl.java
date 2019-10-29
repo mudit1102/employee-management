@@ -11,17 +11,22 @@ import com.work.management.web.rest.resource.AcceptedFields;
 import com.work.management.web.rest.resource.EmployeeResource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-final class EmployeeServiceImpl implements EmployeeService {
+class EmployeeServiceImpl implements EmployeeService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
   private final EmployeeRepository employeeRepository;
@@ -62,6 +67,7 @@ final class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
+  @Transactional
   public EmployeeDto updateEmployeeEntity(EmployeeDto employeeDto) {
     Optional<Employee> employee = employeeRepository.findById(employeeDto.getId());
     if (!employee.isPresent()) {
@@ -91,41 +97,37 @@ final class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
+  @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
   public BulkEmployeeDtoResp bulkUpdate(BulkEmployeeDto bulkEmployeeDto) {
-    //list of employees having updated details
-    List<Employee> newEmployeeList = new ArrayList<>();
-    BulkEmployeeDtoResp bulkEmployeeDtoResp = new BulkEmployeeDtoResp(new ArrayList<>());
-    for (Integer empId : bulkEmployeeDto.getEmployeeId()) {
+    final Map<AcceptedFields, String> acceptedFieldsValueMap = bulkEmployeeDto
+        .getAcceptedFieldsValueMap();
 
-      Optional<Employee> oldEmployee = employeeRepository.findById(empId);
-      if (!oldEmployee.isPresent()) {
-        ExceptionUtils
-            .throwBadRequestException(String.format("Employee with id %d doesn't exist", empId));
-      }
-      Employee newEmployee = new Employee();
-      BeanUtils.copyProperties(oldEmployee.get(), newEmployee);
-      for (Entry<AcceptedFields, String> entry : bulkEmployeeDto.getAcceptedFieldsValueMap()
-          .entrySet()) {
-        if (entry.getKey().getDataType().equals("INTEGER")) {
-          newEmployee.setManager(Integer.parseInt(entry.getValue()));
-        } else {
-          newEmployee.setTeamId(entry.getValue());
-        }
-      }
-      newEmployeeList.add(newEmployee);
-    }
-    //saving to db
-    for (int i = 0; i < newEmployeeList.size(); i++) {
-      employeeRepository.save(newEmployeeList.get(i));
-    }
+    List<Optional<Employee>> employeeList = bulkEmployeeDto.getEmployeeId().stream()
+        .map(employeeRepository::findById).map(employee -> {
+          for (Entry<AcceptedFields, String> entry : acceptedFieldsValueMap.entrySet()) {
+
+            switch (entry.getKey()) {
+              case MANAGER_ID:
+                employee.get().setManager(Integer.parseInt(entry.getValue()));
+                break;
+              case TEAM_ID:
+                employee.get().setTeamId(entry.getValue());
+            }
+          }
+          employeeRepository.save(employee.get());
+          return employee;
+        }).collect(Collectors.toList());
+
+    BulkEmployeeDtoResp bulkEmployeeDtoResp = new BulkEmployeeDtoResp(new ArrayList<>());
     //building response for bulk update query
-    for (int i = 0; i < newEmployeeList.size(); i++) {
+    for (int i = 0; i < employeeList.size(); i++) {
       EmployeeResource employeeResource = new EmployeeResource();
-      BeanUtils.copyProperties(newEmployeeList.get(i), employeeResource);
+      BeanUtils.copyProperties(employeeList.get(i), employeeResource);
       bulkEmployeeDtoResp.getEmployeeResourceList().add(employeeResource);
     }
     //return bulk update response
     return bulkEmployeeDtoResp;
   }
+
 }
 
