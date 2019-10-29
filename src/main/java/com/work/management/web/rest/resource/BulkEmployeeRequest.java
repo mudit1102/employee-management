@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BulkEmployeeRequest {
 
-  private List<Integer> employeeId;
-  private Map<AcceptedFields, String> acceptedFieldsValueMap;
+  private List<Integer> employeeIds;
+  private Map<AcceptedFields, String> acceptedFieldsMap;
 }

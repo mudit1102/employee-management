@@ -64,7 +64,7 @@ class EmployeeServiceImpl implements EmployeeService {
     return employeeDto;
   }
 
-
+  @Override
   @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
   public EmployeeDto updateEmployeeEntity(EmployeeDto employeeDto) {
     Optional<Employee> employee = employeeRepository.findById(employeeDto.getId());
@@ -97,12 +97,12 @@ class EmployeeServiceImpl implements EmployeeService {
   @Override
   @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
   public List<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto) {
-    final Map<AcceptedFields, String> acceptedFieldsValueMap = bulkEmployeeDto
-        .getAcceptedFieldsValueMap();
+    final Map<AcceptedFields, String> acceptedFieldsMap = bulkEmployeeDto
+        .getAcceptedFieldsMap();
 
-    return bulkEmployeeDto.getEmployeeId().stream()
+    return bulkEmployeeDto.getEmployeeIds().stream()
         .map(employeeRepository::findById).map(employee -> {
-          for (Entry<AcceptedFields, String> entry : acceptedFieldsValueMap.entrySet()) {
+          for (Entry<AcceptedFields, String> entry : acceptedFieldsMap.entrySet()) {
 
             switch (entry.getKey()) {
               case MANAGER_ID:
