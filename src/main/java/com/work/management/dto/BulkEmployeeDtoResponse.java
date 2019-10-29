@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class BulkEmployeeDtoResp {
+public class BulkEmployeeDtoResponse {
+
   private List<EmployeeResource> employeeResourceList;
 
 }

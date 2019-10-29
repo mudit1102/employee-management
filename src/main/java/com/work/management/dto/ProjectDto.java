@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Date;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +18,4 @@ public final class ProjectDto {
   Integer owner;
   Date startDate;
   Date endDate;
-  Integer lastUpdatedBy;
-  Integer createdBy;
 }

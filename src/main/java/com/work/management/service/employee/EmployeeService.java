@@ -1,8 +1,9 @@
 package com.work.management.service.employee;
 
 import com.work.management.dto.BulkEmployeeDto;
-import com.work.management.dto.BulkEmployeeDtoResp;
 import com.work.management.dto.EmployeeDto;
+import com.work.management.entity.Employee;
+import java.util.List;
 
 public interface EmployeeService {
 
@@ -12,5 +13,5 @@ public interface EmployeeService {
 
   EmployeeDto updateEmployeeEntity(EmployeeDto employeeDto);
 
-  BulkEmployeeDtoResp bulkUpdate(BulkEmployeeDto bulkEmployeeDto);
+  List<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto);
 }

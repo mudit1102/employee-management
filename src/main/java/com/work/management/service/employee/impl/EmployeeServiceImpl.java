@@ -1,15 +1,13 @@
 package com.work.management.service.employee.impl;
 
 import com.work.management.dto.BulkEmployeeDto;
-import com.work.management.dto.BulkEmployeeDtoResp;
 import com.work.management.dto.EmployeeDto;
 import com.work.management.entity.Employee;
 import com.work.management.repository.EmployeeRepository;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.utils.ExceptionUtils;
 import com.work.management.web.rest.resource.AcceptedFields;
-import com.work.management.web.rest.resource.EmployeeResource;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -98,11 +96,11 @@ class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
-  public BulkEmployeeDtoResp bulkUpdate(BulkEmployeeDto bulkEmployeeDto) {
+  public List<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto) {
     final Map<AcceptedFields, String> acceptedFieldsValueMap = bulkEmployeeDto
         .getAcceptedFieldsValueMap();
 
-    List<Optional<Employee>> employeeList = bulkEmployeeDto.getEmployeeId().stream()
+    return bulkEmployeeDto.getEmployeeId().stream()
         .map(employeeRepository::findById).map(employee -> {
           for (Entry<AcceptedFields, String> entry : acceptedFieldsValueMap.entrySet()) {
 
@@ -116,17 +114,9 @@ class EmployeeServiceImpl implements EmployeeService {
           }
           employeeRepository.save(employee.get());
           return employee;
-        }).collect(Collectors.toList());
+        }).map(employee -> employee.get()).collect(Collectors.collectingAndThen(Collectors.toList(),
+            Collections::unmodifiableList));
 
-    BulkEmployeeDtoResp bulkEmployeeDtoResp = new BulkEmployeeDtoResp(new ArrayList<>());
-    //building response for bulk update query
-    for (int i = 0; i < employeeList.size(); i++) {
-      EmployeeResource employeeResource = new EmployeeResource();
-      BeanUtils.copyProperties(employeeList.get(i), employeeResource);
-      bulkEmployeeDtoResp.getEmployeeResourceList().add(employeeResource);
-    }
-    //return bulk update response
-    return bulkEmployeeDtoResp;
   }
 
 }
