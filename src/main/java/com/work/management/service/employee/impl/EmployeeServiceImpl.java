@@ -10,7 +10,6 @@ import com.work.management.web.rest.resource.AcceptedFields;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -102,19 +101,11 @@ class EmployeeServiceImpl implements EmployeeService {
 
     return bulkEmployeeDto.getEmployeeIds().stream()
         .map(employeeRepository::findById).map(employee -> {
-          for (Entry<AcceptedFields, String> entry : acceptedFieldsMap.entrySet()) {
-
-            switch (entry.getKey()) {
-              case MANAGER_ID:
-                employee.get().setManager(Integer.parseInt(entry.getValue()));
-                break;
-              case TEAM_ID:
-                employee.get().setTeamId(entry.getValue());
-            }
-          }
-          employeeRepository.save(employee.get());
+          acceptedFieldsMap.forEach((field, value) -> field.setValue(employee.get(), value));
           return employee;
-        }).map(employee -> employee.get()).collect(Collectors.collectingAndThen(Collectors.toList(),
+        }).
+            map(employee -> employee.get())
+        .collect(Collectors.collectingAndThen(Collectors.toList(),
             Collections::unmodifiableList));
 
   }
