@@ -1,5 +1,7 @@
 package com.work.management.service.employee.impl;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 import com.work.management.dto.BulkEmployeeDto;
 import com.work.management.dto.EmployeeDto;
 import com.work.management.entity.Employee;
@@ -7,12 +9,10 @@ import com.work.management.repository.EmployeeRepository;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.utils.ExceptionUtils;
 import com.work.management.web.rest.resource.AcceptedFields;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -100,14 +100,12 @@ class EmployeeServiceImpl implements EmployeeService {
         .getAcceptedFieldsMap();
 
     return bulkEmployeeDto.getEmployeeIds().stream()
-        .map(employeeRepository::findById).map(employee -> {
-          acceptedFieldsMap.forEach((field, value) -> field.setValue(employee.get(), value));
-          return employee;
-        }).
-            map(employee -> employee.get())
-        .collect(Collectors.collectingAndThen(Collectors.toList(),
-            Collections::unmodifiableList));
-
+        .map(employeeRepository::findById).map(employeeInDb -> {
+          acceptedFieldsMap
+              .forEach((field, value) -> field.processValue(employeeInDb.get(), value));
+          return employeeInDb;
+        }).map(Optional::get)
+        .collect(toImmutableList());
   }
 
 }

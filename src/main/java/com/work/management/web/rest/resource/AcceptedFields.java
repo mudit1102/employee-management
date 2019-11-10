@@ -17,12 +17,12 @@ public enum AcceptedFields {
   private final String dataType;
   private final BiConsumer<Employee, ?> setterFunction;
 
-  private static final Map<String,Function<String, ?>> mapStringToId;
+  private static final Map<String, Function<String, ?>> mapOfDataTypeConversion;
 
   static {
-    mapStringToId = new HashMap<>();
-    mapStringToId.put("Integer",x -> Integer.parseInt(x));
-    mapStringToId.put("String",Function.identity());
+    mapOfDataTypeConversion = new HashMap<>();
+    mapOfDataTypeConversion.put("Integer", value -> Integer.parseInt(value));
+    mapOfDataTypeConversion.put("String", Function.identity());
   }
 
   AcceptedFields(String dataType, BiConsumer<Employee, ?> setterFunction) {
@@ -34,13 +34,13 @@ public enum AcceptedFields {
     return this.dataType;
   }
 
-  private <T> T getId(String value){
-    Function<String, ?>  function = mapStringToId.get(this.getDataType());
+  private <T> T convert(String value) {
+    Function<String, ?> function = mapOfDataTypeConversion.get(this.getDataType());
     return (T) function.apply(value);
   }
 
-  public Employee setValue(Employee employee, String value) {
-    this.setterFunction.accept(employee,this.getId(value));
+  public Employee processValue(Employee employee, String value) {
+    this.setterFunction.accept(employee, this.convert(value));
     return employee;
   }
 
