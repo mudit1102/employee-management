@@ -1,8 +1,9 @@
-package com.work.management.dto;
+package com.work.management.web.rest.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,10 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public final class ProjectDto {
+public class BulkEmployeeRequest {
 
-  String name;
-  Integer owner;
-  Date startDate;
-  Date endDate;
+  private List<Integer> employeeIds;
+  private Map<AcceptedFields, String> acceptedFieldsMap;
 }
