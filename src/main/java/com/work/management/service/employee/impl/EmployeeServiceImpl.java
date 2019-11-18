@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
   private final EmployeeRepository employeeRepository;
