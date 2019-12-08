@@ -42,4 +42,13 @@ final class TeamController {
     return new ResponseEntity<>(TeamAssembler.convert(teamService.getTeamInfoByName(name)),
         HttpStatus.OK);
   }
+
+  @RequestMapping(method = RequestMethod.PUT, value = "/update", produces = "application/json; charset=UTF-8")
+  @ApiOperation(value = "Update existing team info", response = TeamResponse.class)
+  ResponseEntity<TeamResponse> updateTeamEntity(
+      @Valid @RequestBody @ApiParam(value = "Update team details", required = true) TeamResource teamResource) {
+    return new ResponseEntity<>(
+        TeamAssembler.convert(teamService.updateTeamEntity(TeamAssembler.convert(teamResource))),
+        HttpStatus.OK);
+  }
 }

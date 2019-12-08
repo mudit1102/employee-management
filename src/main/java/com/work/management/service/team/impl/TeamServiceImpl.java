@@ -5,7 +5,7 @@ import com.work.management.entity.Team;
 import com.work.management.repository.TeamRepository;
 import com.work.management.service.team.TeamService;
 import com.work.management.utils.ExceptionUtils;
-import com.work.management.utils.TeamUtils;
+import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +46,37 @@ class TeamServiceImpl implements TeamService {
   public TeamDto getTeamInfoByName(String name) {
     Optional<Team> teamInfo = teamRepository.findByName(name);
     if (!teamInfo.isPresent()) {
-      TeamUtils.throwEntityNotFoundException(
+      ExceptionUtils.throwEntityNotFoundException(
           String.format("Team with name %s doesn't exists.", name));
     }
 
     TeamDto teamDto = new TeamDto();
     BeanUtils.copyProperties(teamInfo.get(), teamDto);
     return teamDto;
+  }
+
+  @Override
+  @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
+  public TeamDto updateTeamEntity(TeamDto teamDto) {
+    Optional<Team> teamEntity = teamRepository.findById(teamDto.getId());
+    if (!teamEntity.isPresent()) {
+      ExceptionUtils.throwEntityNotFoundException(
+          String.format("Team with id %s doesn't exists.", teamDto.getId()));
+    }
+
+    Team oldTeamEntity = teamEntity.get();
+    if (!Objects.isNull(teamDto.getName()) && !teamDto.getName().equals(oldTeamEntity.getName()) ||
+        !Objects.isNull(teamDto.getId()) && !teamDto.getId().equals(oldTeamEntity.getId())) {
+      ExceptionUtils.throwBadRequestException("Cannot update id or name");
+    }
+
+    Team newTeam = new Team();
+    BeanUtils.copyProperties(teamDto, newTeam);
+
+    teamRepository.save(newTeam);
+
+    TeamDto newTeamDto = new TeamDto();
+    BeanUtils.copyProperties(newTeam, newTeamDto);
+    return newTeamDto;
   }
 }
