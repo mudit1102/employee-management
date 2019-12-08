@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public final class TeamDto {
 
   private String name;
+  private String id;
   private Integer manager;
   private List<String> employeeIds;
 }
