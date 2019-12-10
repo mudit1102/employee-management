@@ -14,8 +14,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @ControllerAdvice
 final class LogResponseAdviceAdapter implements ResponseBodyAdvice {
 
+  private final LoggingService loggingService;
+
   @Autowired
-  private LoggingService loggingService;
+  public LogResponseAdviceAdapter(LoggingService loggingService) {
+    this.loggingService = loggingService;
+  }
 
   @Override
   public boolean supports(MethodParameter returnType, Class converterType) {

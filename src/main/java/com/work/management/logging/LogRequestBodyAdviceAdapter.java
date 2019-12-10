@@ -13,11 +13,15 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAd
 @ControllerAdvice
 final class LogRequestBodyAdviceAdapter extends RequestBodyAdviceAdapter {
 
-  @Autowired
-  private LoggingService loggingService;
+  private final LoggingService loggingService;
+  private final HttpServletRequest httpServletRequest;
 
   @Autowired
-  private HttpServletRequest httpServletRequest;
+  LogRequestBodyAdviceAdapter(LoggingService loggingService,
+      HttpServletRequest httpServletRequest) {
+    this.loggingService = loggingService;
+    this.httpServletRequest = httpServletRequest;
+  }
 
   @Override
   public boolean supports(MethodParameter methodParameter, Type targetType,
@@ -28,7 +32,6 @@ final class LogRequestBodyAdviceAdapter extends RequestBodyAdviceAdapter {
   @Override
   public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter,
       Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-
     loggingService.logRequest(httpServletRequest, body);
     return super.afterBodyRead(body, inputMessage, parameter, targetType, converterType);
   }
