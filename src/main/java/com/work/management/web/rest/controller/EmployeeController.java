@@ -61,7 +61,7 @@ final class EmployeeController {
   @RequestMapping(method = RequestMethod.PUT, value = "/bulkUpdate", produces = "application/json; charset=UTF-8")
   @ApiOperation(value = "Bulk updates on employees details")
   ResponseEntity<List<Employee>> employeeBulkUpdate(
-      @Valid @RequestBody @ApiParam(value = "Bulk update on employee details", required = true) BulkEmployeeRequest bulkEmployeeRequest) {
+      @Valid  @ApiParam(value = "Bulk update on employee details", required = true) @RequestBody BulkEmployeeRequest bulkEmployeeRequest) {
     return new ResponseEntity<>(
         employeeService.bulkUpdate(EmployeeAssembler.convert(bulkEmployeeRequest)),
         HttpStatus.OK);

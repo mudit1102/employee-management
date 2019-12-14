@@ -3,14 +3,13 @@ package com.work.management.service.log.impl;
 import com.google.common.collect.ImmutableMap;
 import com.work.management.service.log.LoggingService;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,60 +17,49 @@ final class LoggingServiceImpl implements LoggingService {
 
   private static final Logger logger = LoggerFactory.getLogger(LoggingServiceImpl.class);
 
+  @Autowired
+  private LoggingServiceImpl() {
+
+  }
+
   @Override
   public void logRequest(HttpServletRequest httpServletRequest, Object body) {
-    StringBuilder stringBuilder = new StringBuilder();
-    ImmutableMap<String, String> parameters = buildParametersMap(httpServletRequest);
-
-    stringBuilder.append("REQUEST ").append("method=[").append(httpServletRequest.getMethod())
+    StringBuilder messageToLog = new StringBuilder();
+    messageToLog.append("REQUEST ").append("method=[").append(httpServletRequest.getMethod())
         .append("] ").append("path=[").append(httpServletRequest.getRequestURI()).append("] ")
         .append("headers=[").append(buildHeadersMap(httpServletRequest)).append("] ");
 
-    if (!parameters.isEmpty()) {
-      stringBuilder.append("parameters=[").append(parameters).append("] ");
-    }
-
     if (!Objects.isNull(body)) {
-      stringBuilder.append("body=[" + body + "]");
+      messageToLog.append("body=[").append(body).append("]");
     }
 
-    logger.info(stringBuilder.toString());
+    logger.info(messageToLog.toString());
   }
 
   @Override
   public void logResponse(HttpServletRequest httpServletRequest,
       HttpServletResponse httpServletResponse, Object body) {
-    StringBuilder stringBuilder = new StringBuilder();
-
-    stringBuilder.append("RESPONSE ").append("method=[").append(httpServletRequest.getMethod())
+    StringBuilder messageToLog = new StringBuilder();
+    messageToLog.append("RESPONSE ").append("method=[").append(httpServletRequest.getMethod())
         .append("] ").append("path=[").append(httpServletRequest.getRequestURI()).append("] ")
         .append("responseHeaders=[").append(buildHeadersMap(httpServletResponse))
         .append("] ").append("responseBody=[").append(body).append("] ");
-
-    logger.info(stringBuilder.toString());
-  }
-
-  private static ImmutableMap<String, String> buildParametersMap(
-      HttpServletRequest httpServletRequest) {
-    Map<String, String> parameterValueMap = new HashMap<>();
-    Stream.of(httpServletRequest.getParameterNames()).map(Enumeration::nextElement)
-        .forEach(key -> parameterValueMap.put(key, httpServletRequest.getParameter(key)));
-    return ImmutableMap.copyOf(parameterValueMap);
+    logger.info(messageToLog.toString());
   }
 
   private static ImmutableMap<String, String> buildHeadersMap(
       HttpServletRequest httpServletRequest) {
-    Map<String, String> requestHeader = new HashMap<>();
+    ImmutableMap.Builder<String, String> requestParameter = ImmutableMap.<String, String>builder();
     Stream.of(httpServletRequest.getHeaderNames()).map(Enumeration::nextElement)
-        .forEach(key -> requestHeader.put(key, httpServletRequest.getHeader(key)));
-    return ImmutableMap.copyOf(requestHeader);
+        .forEach(key -> requestParameter.put(key, httpServletRequest.getHeader(key)));
+    return requestParameter.build();
   }
 
   private static ImmutableMap<String, String> buildHeadersMap(
       HttpServletResponse httpServletResponse) {
-    Map<String, String> responseHeader = new HashMap<>();
+    ImmutableMap.Builder<String, String> responseHeader = ImmutableMap.<String, String>builder();
     httpServletResponse.getHeaderNames()
         .forEach(header -> responseHeader.put(header, httpServletResponse.getHeader(header)));
-    return ImmutableMap.copyOf(responseHeader);
+    return responseHeader.build();
   }
 }

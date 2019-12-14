@@ -17,7 +17,7 @@ final class LogResponseAdviceAdapter implements ResponseBodyAdvice {
   private final LoggingService loggingService;
 
   @Autowired
-  public LogResponseAdviceAdapter(LoggingService loggingService) {
+  LogResponseAdviceAdapter(LoggingService loggingService) {
     this.loggingService = loggingService;
   }
 
