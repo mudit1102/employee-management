@@ -18,8 +18,7 @@ final class LoggingServiceImpl implements LoggingService {
   private static final Logger logger = LoggerFactory.getLogger(LoggingServiceImpl.class);
 
   @Autowired
-  private LoggingServiceImpl() {
-
+  LoggingServiceImpl() {
   }
 
   @Override
@@ -29,7 +28,7 @@ final class LoggingServiceImpl implements LoggingService {
         .append("] ").append("path=[").append(httpServletRequest.getRequestURI()).append("] ")
         .append("headers=[").append(buildHeadersMap(httpServletRequest)).append("] ");
 
-    if (!Objects.isNull(body)) {
+    if (Objects.nonNull(body)) {
       messageToLog.append("body=[").append(body).append("]");
     }
 
