@@ -25,8 +25,10 @@ dependencies {
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'org.projectlombok:lombok:1.18.10'
     implementation 'com.google.guava:guava:23.6-jre'
+    implementation 'commons-io:commons-io:2.5'
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
     runtimeOnly 'mysql:mysql-connector-java'
+    runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
