@@ -2,6 +2,7 @@ package com.work.management.web.rest.assembler;
 
 import com.work.management.dto.BulkEmployeeDto;
 import com.work.management.dto.EmployeeDto;
+import com.work.management.entity.Employee;
 import com.work.management.web.rest.resource.BulkEmployeeRequest;
 import com.work.management.web.rest.resource.EmployeeResource;
 import com.work.management.web.rest.resource.EmployeeResponse;
@@ -26,5 +27,11 @@ public final class EmployeeAssembler {
     BulkEmployeeDto bulkEmployeeDto = new BulkEmployeeDto();
     BeanUtils.copyProperties(bulkEmployeeRequest, bulkEmployeeDto);
     return bulkEmployeeDto;
+  }
+
+  public static EmployeeDto convert(Employee employee) {
+    EmployeeDto employeeDto = new EmployeeDto();
+    BeanUtils.copyProperties(employee, employeeDto);
+    return employeeDto;
   }
 }
