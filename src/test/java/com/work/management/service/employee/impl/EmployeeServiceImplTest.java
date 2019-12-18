@@ -1,4 +1,4 @@
-package com.work.management;
+package com.work.management.service.employee.impl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public final class EmployeeServiceTest {
+public final class EmployeeServiceImplTest {
 
   @Resource
   private EmployeeService employeeService;
@@ -40,7 +40,7 @@ public final class EmployeeServiceTest {
         .build();
   }
 
-  private static EmployeeDto getEmployeeDto(final Employee employee) {
+  private static EmployeeDto getEmployeeDto(Employee employee) {
     EmployeeDto employeeDto = new EmployeeDto();
     BeanUtils.copyProperties(employee, employeeDto);
     return employeeDto;
