@@ -1,6 +1,7 @@
 package com.work.management.service.employee.impl;
 
-import static org.junit.Assert.assertEquals;
+
+import static com.google.common.truth.Truth.assertThat;
 
 import com.work.management.dto.EmployeeDto;
 import com.work.management.entity.Employee;
@@ -18,19 +19,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("test")
 public final class EmployeeServiceImplTest {
 
-  @Resource
-  private EmployeeService employeeService;
   private static final Employee EMPLOYEE = getEmployee();
 
-  @Test
-  public void getEmployeeByUserName_forExistingEmployee_returnsEmployee() {
-    EmployeeDto employeeDto = getEmployeeDto(EMPLOYEE);
-    employeeService.save(employeeDto);
+  @Resource
+  private EmployeeService employeeService;
 
-    EmployeeDto actualEmployeeDto = employeeService
-        .getEmployeeByUserName(employeeDto.getUserName());
-
-    assertEquals(employeeDto, actualEmployeeDto);
+  private static EmployeeDto getEmployeeDto(Employee employee) {
+    EmployeeDto employeeDto = new EmployeeDto();
+    BeanUtils.copyProperties(employee, employeeDto);
+    return employeeDto;
   }
 
   private static Employee getEmployee() {
@@ -40,10 +37,15 @@ public final class EmployeeServiceImplTest {
         .build();
   }
 
-  private static EmployeeDto getEmployeeDto(Employee employee) {
-    EmployeeDto employeeDto = new EmployeeDto();
-    BeanUtils.copyProperties(employee, employeeDto);
-    return employeeDto;
+  @Test
+  public void getEmployeeByUserName_forExistingEmployee_returnsEmployee() {
+    EmployeeDto employeeDto = getEmployeeDto(EMPLOYEE);
+    employeeService.save(employeeDto);
+
+    EmployeeDto actualEmployeeDto = employeeService
+        .getEmployeeByUserName(employeeDto.getUserName());
+
+    assertThat(actualEmployeeDto).isEqualTo(employeeDto);
   }
 }
 
