@@ -24,6 +24,17 @@ public final class EmployeeServiceImplTest {
   @Resource
   private EmployeeService employeeService;
 
+  @Test
+  public void getEmployeeByUserName_forExistingEmployee_returnsEmployee() {
+    EmployeeDto employeeDto = getEmployeeDto(EMPLOYEE);
+    employeeService.save(employeeDto);
+
+    EmployeeDto actualEmployeeDto = employeeService
+        .getEmployeeByUserName(employeeDto.getUserName());
+
+    assertThat(actualEmployeeDto).isEqualTo(employeeDto);
+  }
+
   private static EmployeeDto getEmployeeDto(Employee employee) {
     EmployeeDto employeeDto = new EmployeeDto();
     BeanUtils.copyProperties(employee, employeeDto);
@@ -35,17 +46,6 @@ public final class EmployeeServiceImplTest {
         .teamId("c7f6fbab-22fb-41bc-9300-0cc27c0de5c5")
         .phoneNumber("9654092992").manager(3)
         .build();
-  }
-
-  @Test
-  public void getEmployeeByUserName_forExistingEmployee_returnsEmployee() {
-    EmployeeDto employeeDto = getEmployeeDto(EMPLOYEE);
-    employeeService.save(employeeDto);
-
-    EmployeeDto actualEmployeeDto = employeeService
-        .getEmployeeByUserName(employeeDto.getUserName());
-
-    assertThat(actualEmployeeDto).isEqualTo(employeeDto);
   }
 }
 
