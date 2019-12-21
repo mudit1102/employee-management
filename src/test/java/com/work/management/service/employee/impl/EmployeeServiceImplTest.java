@@ -13,10 +13,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 public final class EmployeeServiceImplTest {
 
   private static final Employee EMPLOYEE = getEmployee();
@@ -31,6 +33,17 @@ public final class EmployeeServiceImplTest {
 
     EmployeeDto actualEmployeeDto = employeeService
         .getEmployeeByUserName(employeeDto.getUserName());
+
+    assertThat(actualEmployeeDto).isEqualTo(employeeDto);
+  }
+
+  @Test
+  public void updateEmployeeEntity_forExistingEmployee_returnsUpdatedEmployee() {
+    EmployeeDto employeeDto = getEmployeeDto(EMPLOYEE);
+    employeeService.save(employeeDto);
+
+    employeeDto.setPhoneNumber("9999745902");
+    EmployeeDto actualEmployeeDto = employeeService.updateEmployeeEntity(employeeDto);
 
     assertThat(actualEmployeeDto).isEqualTo(employeeDto);
   }
