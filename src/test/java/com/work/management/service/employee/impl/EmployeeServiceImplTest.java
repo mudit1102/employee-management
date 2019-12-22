@@ -56,15 +56,10 @@ public final class EmployeeServiceImplTest {
   @Test
   public void bulkUpdate_forExistingEmployees_returnUpdatedEmployeesList() {
     ImmutableList<Employee> employeeList = getEmployeeList();
-
-    //Saving into DB
     employeeList.forEach(employee -> employeeService.save(getEmployeeDto(employee)));
 
-    //Bulk Update
-    ImmutableList<Employee> actualBulkUpdatedEmployeesInfo = (ImmutableList<Employee>) employeeService
+    ImmutableList<Employee> actualBulkUpdatedEmployeesInfo = employeeService
         .bulkUpdate(getBulkEmployeeDto());
-
-    //Getting employee list from the DB
     ImmutableList<Employee> updatedEmployeesInfo = employeeList.stream()
         .map(employee -> employeeService.getEmployeeByUserName(employee.getUserName()))
         .map(EmployeeServiceImplTest::getEmployee)
