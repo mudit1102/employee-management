@@ -3,6 +3,7 @@ package com.work.management.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +24,8 @@ public final class EmployeeDto {
   private Integer manager;
   private String teamId;
   private String phoneNumber;
+  private Date createdAtTimeStamp;
+  private Date lastUpdatedTimeStamp;
+  private Integer lastUpdatedBy;
+  private Integer createdBy;
 }
