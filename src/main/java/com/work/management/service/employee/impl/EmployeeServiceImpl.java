@@ -2,6 +2,7 @@ package com.work.management.service.employee.impl;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
+import com.google.common.collect.ImmutableList;
 import com.work.management.dto.BulkEmployeeDto;
 import com.work.management.dto.EmployeeDto;
 import com.work.management.entity.Employee;
@@ -95,7 +96,7 @@ class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
-  public List<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto) {
+  public ImmutableList<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto) {
     final Map<AcceptedFields, String> acceptedFieldsMap = bulkEmployeeDto
         .getAcceptedFieldsMap();
 
