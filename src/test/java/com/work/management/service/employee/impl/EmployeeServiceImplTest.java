@@ -102,16 +102,13 @@ public final class EmployeeServiceImplTest {
 
   private static BulkEmployeeDto getBulkEmployeeDto() {
     return BulkEmployeeDto.builder()
-        .employeeIds(getEmployeeIdList())
+        .employeeIds(ImmutableList.of(1, 2, 3))
         .acceptedFieldsMap(getAcceptedFields()).build();
   }
 
-  private static ImmutableList<Integer> getEmployeeIdList() {
-    return ImmutableList.of(1, 2, 3);
-  }
-
   private static ImmutableMap<AcceptedFields, String> getAcceptedFields() {
-    return ImmutableMap.<AcceptedFields, String>builder().put(AcceptedFields.MANAGER_ID, "10")
+    return ImmutableMap.<AcceptedFields, String>builder()
+        .put(AcceptedFields.MANAGER_ID, "10")
         .put(AcceptedFields.TEAM_ID, "c7f6fbab-22fb-41bc-9300-0cc27c0de5c5").build();
   }
 }
