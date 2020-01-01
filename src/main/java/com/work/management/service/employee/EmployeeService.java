@@ -13,5 +13,5 @@ public interface EmployeeService {
 
   EmployeeDto updateEmployeeEntity(EmployeeDto employeeDto);
 
-  ImmutableList<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto);
+  ImmutableList<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto) throws Exception;
 }

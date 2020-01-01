@@ -3,12 +3,14 @@ package com.work.management.service.employee.impl;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.work.management.dto.BulkEmployeeDto;
 import com.work.management.dto.EmployeeDto;
 import com.work.management.entity.Employee;
+import com.work.management.exceptions.BadRequestException;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.web.rest.resource.AcceptedFields;
 import javax.annotation.Resource;
@@ -54,7 +56,7 @@ public final class EmployeeServiceImplTest {
   }
 
   @Test
-  public void bulkUpdate_forExistingEmployees_returnUpdatedEmployeesList() {
+  public void bulkUpdate_forExistingEmployees_returnUpdatedEmployeesList() throws Exception {
     ImmutableList<Employee> employeeList = getEmployeeList();
     employeeList.forEach(employee -> employeeService.save(getEmployeeDto(employee)));
 
@@ -66,6 +68,13 @@ public final class EmployeeServiceImplTest {
         .collect(toImmutableList());
 
     assertThat(actualBulkUpdatedEmployeesInfo).isEqualTo(updatedEmployeesInfo);
+  }
+
+  @Test
+  public void bulkUpdate_forDuplicateEmployee_throwsBadRequestException() {
+    BadRequestException exception = assertThrows(BadRequestException.class,
+        () -> employeeService.bulkUpdate(getDuplicateBulkEmployeeDto()));
+    assertThat(exception).hasMessageThat().contains("Duplicate employee ids exist");
   }
 
   private static Employee getEmployee(EmployeeDto employeeDto) {
@@ -110,6 +119,12 @@ public final class EmployeeServiceImplTest {
     return ImmutableMap.<AcceptedFields, String>builder()
         .put(AcceptedFields.MANAGER_ID, "10")
         .put(AcceptedFields.TEAM_ID, "c7f6fbab-22fb-41bc-9300-0cc27c0de5c5").build();
+  }
+
+  private static BulkEmployeeDto getDuplicateBulkEmployeeDto() {
+    return BulkEmployeeDto.builder()
+        .employeeIds(ImmutableList.of(1, 2, 1))
+        .acceptedFieldsMap(getAcceptedFields()).build();
   }
 }
 
