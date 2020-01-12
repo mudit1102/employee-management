@@ -11,7 +11,6 @@ import com.work.management.repository.EmployeeRepository;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.utils.ExceptionUtils;
 import com.work.management.web.rest.resource.AcceptedFields;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -97,11 +96,10 @@ class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
-  public ImmutableList<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto) throws Exception {
-    if (!hasUniqueIds(bulkEmployeeDto.getEmployeeIds())) {
-      ExceptionUtils
-          .throwBadRequestException(
-              String.format("Duplicate employee ids exist"));
+  public ImmutableList<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto) {
+    if (!(bulkEmployeeDto.getEmployeeIds().size() == ImmutableSet
+        .copyOf(bulkEmployeeDto.getEmployeeIds()).size())) {
+      ExceptionUtils.throwBadRequestException("Duplicate employee ids exist");
     }
 
     final Map<AcceptedFields, String> acceptedFieldsMap = bulkEmployeeDto
@@ -114,10 +112,6 @@ class EmployeeServiceImpl implements EmployeeService {
           return employeeInDb;
         }).map(Optional::get)
         .collect(toImmutableList());
-  }
-
-  private static boolean hasUniqueIds(List<Integer> employeeIds) {
-    return employeeIds.size() == ImmutableSet.copyOf(employeeIds).size();
   }
 }
 

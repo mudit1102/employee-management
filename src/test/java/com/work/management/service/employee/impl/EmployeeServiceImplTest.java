@@ -56,12 +56,17 @@ public final class EmployeeServiceImplTest {
   }
 
   @Test
-  public void bulkUpdate_forExistingEmployees_returnUpdatedEmployeesList() throws Exception {
+  public void bulkUpdate_forExistingEmployees_returnUpdatedEmployeesList() {
     ImmutableList<Employee> employeeList = getEmployeeList();
     employeeList.forEach(employee -> employeeService.save(getEmployeeDto(employee)));
 
     ImmutableList<Employee> actualBulkUpdatedEmployeesInfo = employeeService
-        .bulkUpdate(getBulkEmployeeDto());
+        .bulkUpdate(BulkEmployeeDto.builder()
+            .employeeIds(ImmutableList.of(1, 2, 8))
+            .acceptedFieldsMap(ImmutableMap.<AcceptedFields, String>builder()
+                .put(AcceptedFields.MANAGER_ID, "10")
+                .put(AcceptedFields.TEAM_ID, "c7f6fbab-22fb-41bc-9300-0cc27c0de5c5").build())
+            .build());
     ImmutableList<Employee> updatedEmployeesInfo = employeeList.stream()
         .map(employee -> employeeService.getEmployeeByUserName(employee.getUserName()))
         .map(EmployeeServiceImplTest::getEmployee)
@@ -73,7 +78,12 @@ public final class EmployeeServiceImplTest {
   @Test
   public void bulkUpdate_forDuplicateEmployee_throwsBadRequestException() {
     BadRequestException exception = assertThrows(BadRequestException.class,
-        () -> employeeService.bulkUpdate(getDuplicateBulkEmployeeDto()));
+        () -> employeeService.bulkUpdate(BulkEmployeeDto.builder()
+            .employeeIds(ImmutableList.of(1, 2, 1))
+            .acceptedFieldsMap(ImmutableMap.<AcceptedFields, String>builder()
+                .put(AcceptedFields.MANAGER_ID, "10")
+                .put(AcceptedFields.TEAM_ID, "c7f6fbab-22fb-41bc-9300-0cc27c0de5c5").build()).
+                build()));
     assertThat(exception).hasMessageThat().contains("Duplicate employee ids exist");
   }
 
@@ -107,24 +117,6 @@ public final class EmployeeServiceImplTest {
     EmployeeDto employeeDto = new EmployeeDto();
     BeanUtils.copyProperties(employee, employeeDto);
     return employeeDto;
-  }
-
-  private static BulkEmployeeDto getBulkEmployeeDto() {
-    return BulkEmployeeDto.builder()
-        .employeeIds(ImmutableList.of(1, 2, 3))
-        .acceptedFieldsMap(getAcceptedFields()).build();
-  }
-
-  private static ImmutableMap<AcceptedFields, String> getAcceptedFields() {
-    return ImmutableMap.<AcceptedFields, String>builder()
-        .put(AcceptedFields.MANAGER_ID, "10")
-        .put(AcceptedFields.TEAM_ID, "c7f6fbab-22fb-41bc-9300-0cc27c0de5c5").build();
-  }
-
-  private static BulkEmployeeDto getDuplicateBulkEmployeeDto() {
-    return BulkEmployeeDto.builder()
-        .employeeIds(ImmutableList.of(1, 2, 1))
-        .acceptedFieldsMap(getAcceptedFields()).build();
   }
 }
 
