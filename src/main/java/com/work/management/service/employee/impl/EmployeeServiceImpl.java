@@ -5,6 +5,9 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import com.work.management.dto.BulkEmployeeDto;
 import com.work.management.dto.EmployeeDto;
 import com.work.management.entity.Employee;
+import com.work.management.entity.EntityType;
+import com.work.management.entity.MetaEntity;
+import com.work.management.entity.OperationType;
 import com.work.management.repository.EmployeeRepository;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.utils.ExceptionUtils;
@@ -17,6 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,12 +32,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 class EmployeeServiceImpl implements EmployeeService {
 
+  private static final String TOPIC = "employee";
   private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
   private final EmployeeRepository employeeRepository;
+  private final KafkaTemplate<String, MetaEntity> kafkaTemplate;
 
   @Autowired
-  EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+  EmployeeServiceImpl(EmployeeRepository employeeRepository,
+      KafkaTemplate<String, MetaEntity> kafkaTemplate) {
     this.employeeRepository = employeeRepository;
+    this.kafkaTemplate = kafkaTemplate;
   }
 
   @Override
@@ -44,6 +55,12 @@ class EmployeeServiceImpl implements EmployeeService {
     BeanUtils.copyProperties(employeeDto, employee);
 
     employeeRepository.save(employee);
+
+    MetaEntity metaEntity = MetaEntity.builder().entity(employee).entityType(EntityType.EMPLOYEE)
+        .operationType(OperationType.CREATE).build();
+    Message<MetaEntity> message = MessageBuilder.withPayload(metaEntity)
+        .setHeader(KafkaHeaders.TOPIC, TOPIC).build();
+    kafkaTemplate.send(message);
 
     BeanUtils.copyProperties(employee, employeeDto);
     return employeeDto;
