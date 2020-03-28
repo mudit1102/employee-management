@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class MetaEntity {
+public final class MetaEntity {
 
   private OperationType operationType;
   private EntityType entityType;

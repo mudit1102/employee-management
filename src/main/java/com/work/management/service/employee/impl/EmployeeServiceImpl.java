@@ -45,6 +45,7 @@ class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
+  @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
   public EmployeeDto save(EmployeeDto employeeDto) {
     if (employeeRepository.findByPhoneNumber(employeeDto.getPhoneNumber()).isPresent()) {
       ExceptionUtils.throwEntityAlreadyExistsException(
