@@ -2,6 +2,8 @@ package com.work.management.service.employee.impl;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.work.management.dto.BulkEmployeeDto;
 import com.work.management.dto.EmployeeDto;
 import com.work.management.entity.Employee;
@@ -9,7 +11,6 @@ import com.work.management.repository.EmployeeRepository;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.utils.ExceptionUtils;
 import com.work.management.web.rest.resource.AcceptedFields;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -95,7 +96,12 @@ class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
-  public List<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto) {
+  public ImmutableList<Employee> bulkUpdate(BulkEmployeeDto bulkEmployeeDto) {
+    if (!(bulkEmployeeDto.getEmployeeIds().size() == ImmutableSet
+        .copyOf(bulkEmployeeDto.getEmployeeIds()).size())) {
+      ExceptionUtils.throwBadRequestException("Duplicate employee ids exist");
+    }
+
     final Map<AcceptedFields, String> acceptedFieldsMap = bulkEmployeeDto
         .getAcceptedFieldsMap();
 
@@ -107,6 +113,5 @@ class EmployeeServiceImpl implements EmployeeService {
         }).map(Optional::get)
         .collect(toImmutableList());
   }
-
 }
 

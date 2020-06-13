@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.1.8.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
+    id 'jacoco'
 }
 
 group = 'com.work.management'
@@ -29,8 +30,16 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0-M1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.google.truth.extensions:truth-java8-extension:1.0'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
 }
 
 dependencyManagement {
