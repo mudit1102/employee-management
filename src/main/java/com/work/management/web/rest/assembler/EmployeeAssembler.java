@@ -1,8 +1,10 @@
 package com.work.management.web.rest.assembler;
 
 import com.work.management.dto.BulkEmployeeDto;
+import com.work.management.dto.EmployeeDocumentDto;
 import com.work.management.dto.EmployeeDto;
 import com.work.management.web.rest.resource.BulkEmployeeRequest;
+import com.work.management.web.rest.resource.EmployeeDocumentResource;
 import com.work.management.web.rest.resource.EmployeeResource;
 import com.work.management.web.rest.resource.EmployeeResponse;
 import org.springframework.beans.BeanUtils;
@@ -26,5 +28,11 @@ public final class EmployeeAssembler {
     BulkEmployeeDto bulkEmployeeDto = new BulkEmployeeDto();
     BeanUtils.copyProperties(bulkEmployeeRequest, bulkEmployeeDto);
     return bulkEmployeeDto;
+  }
+
+  public static EmployeeDocumentDto convert(EmployeeDocumentResource employeeDocumentResource) {
+    EmployeeDocumentDto employeeDocumentDto = new EmployeeDocumentDto();
+    BeanUtils.copyProperties(employeeDocumentResource, employeeDocumentDto);
+    return employeeDocumentDto;
   }
 }

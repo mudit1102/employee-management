@@ -4,6 +4,7 @@ import com.work.management.entity.Employee;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.web.rest.assembler.EmployeeAssembler;
 import com.work.management.web.rest.resource.BulkEmployeeRequest;
+import com.work.management.web.rest.resource.EmployeeDocumentResource;
 import com.work.management.web.rest.resource.EmployeeResource;
 import com.work.management.web.rest.resource.EmployeeResponse;
 import io.swagger.annotations.ApiOperation;
@@ -65,5 +66,13 @@ final class EmployeeController {
     return new ResponseEntity<>(
         employeeService.bulkUpdate(EmployeeAssembler.convert(bulkEmployeeRequest)),
         HttpStatus.OK);
+  }
+
+  @RequestMapping(method = RequestMethod.POST, value = "/create/document", produces = "application/json; charset=UTF-8")
+  @ApiOperation(value = "Create an EmployeeDocument", response = EmployeeResource.class)
+  String createEmployeeDocument(
+      @Valid @RequestBody @ApiParam(value = "Employee Document Details", required = true) EmployeeDocumentResource employeeDocumentResource) {
+
+    return employeeService.createDocument(EmployeeAssembler.convert(employeeDocumentResource));
   }
 }

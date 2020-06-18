@@ -2,7 +2,10 @@ package com.work.management.service.employee.impl;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.work.management.configuration.ElasticConfigProperties;
 import com.work.management.dto.BulkEmployeeDto;
+import com.work.management.dto.EmployeeDocumentDto;
 import com.work.management.dto.EmployeeDto;
 import com.work.management.entity.Employee;
 import com.work.management.entity.EntityType;
@@ -16,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -30,18 +36,28 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService {
 
   private static final String TOPIC = "employee";
   private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+
   private final EmployeeRepository employeeRepository;
   private final KafkaTemplate<String, MetaEntity> kafkaTemplate;
+  private final RestHighLevelClient restHighLevelClient;
+  private final ElasticConfigProperties elasticConfigProperties;
+  private final ObjectMapper objectMapper;
 
   @Autowired
-  EmployeeServiceImpl(EmployeeRepository employeeRepository,
-      KafkaTemplate<String, MetaEntity> kafkaTemplate) {
+  public EmployeeServiceImpl(EmployeeRepository employeeRepository,
+      KafkaTemplate<String, MetaEntity> kafkaTemplate,
+      RestHighLevelClient restHighLevelClient,
+      ElasticConfigProperties elasticConfigProperties,
+      ObjectMapper objectMapper) {
     this.employeeRepository = employeeRepository;
     this.kafkaTemplate = kafkaTemplate;
+    this.restHighLevelClient = restHighLevelClient;
+    this.elasticConfigProperties = elasticConfigProperties;
+    this.objectMapper = objectMapper;
   }
 
   @Override
@@ -124,6 +140,26 @@ class EmployeeServiceImpl implements EmployeeService {
           return employeeInDb;
         }).map(Optional::get)
         .collect(toImmutableList());
+  }
+
+  @Override
+  public String createDocument(final EmployeeDocumentDto employeeDocumentDto) {
+
+    try {
+      Map employeeDtoMapper = objectMapper.convertValue(employeeDocumentDto, Map.class);
+      final IndexRequest indexRequest = new IndexRequest(
+          elasticConfigProperties.getIndex().getName(), "_doc",
+          String.valueOf(employeeDocumentDto.getId()))
+          .source(employeeDtoMapper);
+
+      return restHighLevelClient
+          .index(indexRequest, RequestOptions.DEFAULT).getId();
+
+    } catch (Exception ex) {
+      LOGGER.error("The exception was thrown in createDocument ", ex);
+
+    }
+    return null;
   }
 
 }

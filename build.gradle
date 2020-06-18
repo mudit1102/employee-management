@@ -30,6 +30,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:2.2.1.RELEASE'
     implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.elasticsearch:elasticsearch:6.8.7'
+    implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:6.8.7'
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2'
