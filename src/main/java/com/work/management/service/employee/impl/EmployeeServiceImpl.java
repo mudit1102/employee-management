@@ -2,11 +2,17 @@ package com.work.management.service.employee.impl;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.work.management.configuration.ElasticConfigProperties;
 import com.work.management.dto.BulkEmployeeDto;
+import com.work.management.dto.EmployeeDocumentDto;
 import com.work.management.dto.EmployeeDto;
 import com.work.management.entity.Employee;
+import com.work.management.entity.EntityType;
+import com.work.management.entity.MetaEntity;
+import com.work.management.entity.OperationType;
 import com.work.management.repository.EmployeeRepository;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.utils.ExceptionUtils;
@@ -14,27 +20,49 @@ import com.work.management.web.rest.resource.AcceptedFields;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService {
 
+  private static final String TOPIC = "employee";
   private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+
   private final EmployeeRepository employeeRepository;
+  private final KafkaTemplate<String, MetaEntity> kafkaTemplate;
+  private final RestHighLevelClient restHighLevelClient;
+  private final ElasticConfigProperties elasticConfigProperties;
+  private final ObjectMapper objectMapper;
 
   @Autowired
-  EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+  public EmployeeServiceImpl(EmployeeRepository employeeRepository,
+      KafkaTemplate<String, MetaEntity> kafkaTemplate,
+      RestHighLevelClient restHighLevelClient,
+      ElasticConfigProperties elasticConfigProperties,
+      ObjectMapper objectMapper) {
     this.employeeRepository = employeeRepository;
+    this.kafkaTemplate = kafkaTemplate;
+    this.restHighLevelClient = restHighLevelClient;
+    this.elasticConfigProperties = elasticConfigProperties;
+    this.objectMapper = objectMapper;
   }
 
   @Override
+  @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
   public EmployeeDto save(EmployeeDto employeeDto) {
     if (employeeRepository.findByPhoneNumber(employeeDto.getPhoneNumber()).isPresent()) {
       ExceptionUtils.throwEntityAlreadyExistsException(
@@ -45,6 +73,12 @@ class EmployeeServiceImpl implements EmployeeService {
     BeanUtils.copyProperties(employeeDto, employee);
 
     employeeRepository.save(employee);
+
+    MetaEntity metaEntity = MetaEntity.builder().entity(employee).entityType(EntityType.EMPLOYEE)
+        .operationType(OperationType.CREATE).build();
+    Message<MetaEntity> message = MessageBuilder.withPayload(metaEntity)
+        .setHeader(KafkaHeaders.TOPIC, TOPIC).build();
+    kafkaTemplate.send(message);
 
     BeanUtils.copyProperties(employee, employeeDto);
     return employeeDto;
@@ -113,5 +147,26 @@ class EmployeeServiceImpl implements EmployeeService {
         }).map(Optional::get)
         .collect(toImmutableList());
   }
+
+  @Override
+  public String createDocument(final EmployeeDocumentDto employeeDocumentDto) {
+
+    try {
+      Map employeeDtoMapper = objectMapper.convertValue(employeeDocumentDto, Map.class);
+      final IndexRequest indexRequest = new IndexRequest(
+          elasticConfigProperties.getIndex().getName(), "_doc",
+          String.valueOf(employeeDocumentDto.getId()))
+          .source(employeeDtoMapper);
+
+      return restHighLevelClient
+          .index(indexRequest, RequestOptions.DEFAULT).getId();
+
+    } catch (Exception ex) {
+      LOGGER.error("The exception was thrown in createDocument ", ex);
+
+    }
+    return null;
+  }
+
 }
 

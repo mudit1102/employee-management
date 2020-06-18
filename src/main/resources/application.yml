@@ -1,18 +1,19 @@
-spring:
-  datasource:
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/restdb
-    username: root
-    password: dtu@1234
-  jpa:
-    hibernate.ddl-auto: update
-    properties.hibernate.dialect: org.hibernate.dialect.MySQL55Dialect
-    generate-ddl: true
-    show-sql: true
+app:
+  clients:
+    hostName: localhost
+    scheme: http
+    httpPort: 9200
+  index:
+    name: employee-search
+    shard: 2
+    replica: 1
+    from: 0
+    size: 5
+    timeout: 60
 
 server:
-  port: 8090
+  port: 8093
 
-logging:
-  level:
-    org.springframework: DEBUG
+spring:
+  application:
+    name: restworkmanagement
