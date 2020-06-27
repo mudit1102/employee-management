@@ -5,10 +5,12 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.Gson;
 import com.work.management.configuration.ElasticConfigProperties;
 import com.work.management.dto.BulkEmployeeDto;
 import com.work.management.dto.EmployeeDocumentDto;
 import com.work.management.dto.EmployeeDto;
+import com.work.management.dto.FilterEmployeeDto;
 import com.work.management.entity.Employee;
 import com.work.management.entity.EntityType;
 import com.work.management.entity.MetaEntity;
@@ -17,12 +19,21 @@ import com.work.management.repository.EmployeeRepository;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.utils.ExceptionUtils;
 import com.work.management.web.rest.resource.AcceptedFields;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -47,18 +58,23 @@ public class EmployeeServiceImpl implements EmployeeService {
   private final RestHighLevelClient restHighLevelClient;
   private final ElasticConfigProperties elasticConfigProperties;
   private final ObjectMapper objectMapper;
+  private final SearchSourceBuilder searchSourceBuilder;
+  private final Gson gson;
 
   @Autowired
   public EmployeeServiceImpl(EmployeeRepository employeeRepository,
       KafkaTemplate<String, MetaEntity> kafkaTemplate,
       RestHighLevelClient restHighLevelClient,
       ElasticConfigProperties elasticConfigProperties,
-      ObjectMapper objectMapper) {
+      ObjectMapper objectMapper,
+      SearchSourceBuilder searchSourceBuilder, Gson gson) {
     this.employeeRepository = employeeRepository;
     this.kafkaTemplate = kafkaTemplate;
     this.restHighLevelClient = restHighLevelClient;
     this.elasticConfigProperties = elasticConfigProperties;
     this.objectMapper = objectMapper;
+    this.searchSourceBuilder = searchSourceBuilder;
+    this.gson = gson;
   }
 
   @Override
@@ -167,6 +183,55 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     return null;
   }
+
+  @Override
+  public List<EmployeeDocumentDto> filterEmployeeDocument(
+      final FilterEmployeeDto filterEmployeeDto) {
+    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+
+    filterEmployeeDto.getFilterMap().forEach((operator, value) -> {
+          switch (operator) {
+            case EQUAL:
+              value.forEach((fieldInfo, list) -> {
+                boolQueryBuilder.must(QueryBuilders.termsQuery(fieldInfo.getFieldName(),fieldInfo.convert(list)));
+              });
+              break;
+            case GREATER:
+              value.forEach((fieldInfo, list) -> {
+               boolQueryBuilder.filter(QueryBuilders.rangeQuery(fieldInfo.getFieldName()).gt(fieldInfo.convert(list).get(0)));
+              });
+              break;
+            case LESS:
+              value.forEach((fieldInfo, list) -> {
+               boolQueryBuilder.filter(QueryBuilders.rangeQuery(fieldInfo.getFieldName()).lt(fieldInfo.convert(list).get(0)));
+              });
+          }
+        }
+
+    );
+
+    searchSourceBuilder.query(boolQueryBuilder);
+    SearchRequest searchRequest = new SearchRequest(elasticConfigProperties.getIndex().getName());
+    searchRequest.source(searchSourceBuilder);
+    try {
+      SearchResponse searchResponse = restHighLevelClient
+          .search(searchRequest, RequestOptions.DEFAULT);
+      SearchHits hits = searchResponse.getHits();
+      SearchHit[] searchHits = hits.getHits();
+      List<EmployeeDocumentDto> employeeDocumentDtoList = new ArrayList<>();
+      for (SearchHit hit : searchHits) {
+        EmployeeDocumentDto employeeDocumentDto = gson
+            .fromJson(hit.getSourceAsString(), EmployeeDocumentDto.class);
+        employeeDocumentDtoList.add(employeeDocumentDto);
+      }
+
+      return ImmutableList.copyOf(employeeDocumentDtoList);
+    } catch (Exception ex) {
+      LOGGER.error("Exception thrown while getting the response", ex);
+    }
+    return null;
+  }
+
 
 }
 

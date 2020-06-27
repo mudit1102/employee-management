@@ -1,5 +1,7 @@
 package com.work.management.web.rest.controller;
 
+import com.work.management.dto.EmployeeDocumentDto;
+import com.work.management.dto.FilterEmployeeDto;
 import com.work.management.entity.Employee;
 import com.work.management.service.employee.EmployeeService;
 import com.work.management.web.rest.assembler.EmployeeAssembler;
@@ -7,6 +9,7 @@ import com.work.management.web.rest.resource.BulkEmployeeRequest;
 import com.work.management.web.rest.resource.EmployeeDocumentResource;
 import com.work.management.web.rest.resource.EmployeeResource;
 import com.work.management.web.rest.resource.EmployeeResponse;
+import com.work.management.web.rest.resource.FilterEmployeeRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
@@ -69,10 +72,18 @@ final class EmployeeController {
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "/create/document", produces = "application/json; charset=UTF-8")
-  @ApiOperation(value = "Create an EmployeeDocument", response = EmployeeResource.class)
+  @ApiOperation(value = "Create an EmployeeDocument")
   String createEmployeeDocument(
       @Valid @RequestBody @ApiParam(value = "Employee Document Details", required = true) EmployeeDocumentResource employeeDocumentResource) {
 
     return employeeService.createDocument(EmployeeAssembler.convert(employeeDocumentResource));
+  }
+
+  @RequestMapping(method = RequestMethod.GET, value = "/filter/employee/doc", produces = "application/json; charset=UTF-8")
+  @ApiOperation(value = "Filter Employee Document", response = List.class)
+  List<EmployeeDocumentDto> filterEmployeeDoc(
+      @Valid @RequestBody @ApiParam(value = "List of filtered employee document", required = true) FilterEmployeeRequest filterEmployeeRequest) {
+
+    return employeeService.filterEmployeeDocument(EmployeeAssembler.convert(filterEmployeeRequest));
   }
 }

@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.elasticsearch:elasticsearch:6.8.7'
     implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:6.8.7'
+    implementation 'com.google.code.gson:gson:2.8.2'
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2'

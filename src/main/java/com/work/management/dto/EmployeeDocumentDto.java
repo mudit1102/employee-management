@@ -21,5 +21,5 @@ public class EmployeeDocumentDto {
   private String teamId;
   private String phoneNumber;
   private Integer age;
-
+  private Integer salary;
 }

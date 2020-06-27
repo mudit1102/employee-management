@@ -1,7 +1,11 @@
-package com.work.management.web.rest.resource;
+package com.work.management.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.work.management.web.rest.resource.FieldInfo;
+import com.work.management.web.rest.resource.Operator;
+import java.util.ArrayList;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,15 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class EmployeeDocumentResource {
+public class FilterEmployeeDto {
 
-  private String firstName;
-  private String lastName;
-  private String userName;
-  private Integer id;
-  private Integer manager;
-  private String teamId;
-  private String phoneNumber;
-  private Integer age;
-  private Integer salary;
+  private Map<Operator, Map<FieldInfo, ArrayList<String>>> filterMap;
 }
