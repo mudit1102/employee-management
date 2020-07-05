@@ -52,19 +52,34 @@ Follow below steps in the order they are given.
 
 * ## High Level View of how the user interacts with the service and rest of the world ##
 
- ![](https://user-images.githubusercontent.com/29011354/86270372-c3ccb100-bbe8-11ea-9004-57fd9477649b.png)
+ ![high_level_view](https://user-images.githubusercontent.com/29011354/86270372-c3ccb100-bbe8-11ea-9004-57fd9477649b.png)
  
 * ## Brief overview about each service ##
   
-  ![](https://user-images.githubusercontent.com/29011354/86270880-97656480-bbe9-11ea-8a14-3df370f08b14.png)
+  ![service_overview](https://user-images.githubusercontent.com/29011354/86270880-97656480-bbe9-11ea-8a14-3df370f08b14.png)
   
 * ## Start up process ##
 
-  ![](https://user-images.githubusercontent.com/29011354/86270917-aa783480-bbe9-11ea-9373-068e456f0265.png)
+  ![start_up_process](https://user-images.githubusercontent.com/29011354/86270917-aa783480-bbe9-11ea-9373-068e456f0265.png)
+
+* ## Requirements ##
+  * https://docs.google.com/document/d/1BYSdi1IW_ig8dhVZkgg-vIPuACPOEJ4iNHWjWRLdmoU/edit?usp=sharing
+
+* ## Design Docs links ##
+  * Employee Api Design Doc link (https://docs.google.com/document/d/10I5F6AaOdremBQXueAhN2WrAaHS1HgayyDwtQu3zkhk/edit?usp=sharing)
+  * Teams Api Design Doc link (https://docs.google.com/document/d/1hbVN2MnU2vpGe74wDw1YuNBfmGMn4u8x5tZVtk6hiO4/edit?usp=sharing)
+  * Projects Api Design Doc link (https://docs.google.com/document/d/1dJ4kgfpxKKuuuX4_YfUEn5lwHOs-lNojYmijh-hN2bk/edit?usp=sharing)
+
 
 * ## TODO ##
-  * Integrating the service with elastic search.
+  * Integrating the service with elastic search for searching employees.
+  * Attachments on projects.
+  * Task assignment.
+  * Comments on tasks.
   
+* ## Important Notes  ##
+  * https://docs.google.com/document/d/1BYSdi1IW_ig8dhVZkgg-vIPuACPOEJ4iNHWjWRLdmoU/edit?usp=sharing
+   
 * ## Disclaimer ##
 
   * Downloading copyrighted material may be illegal in your country. Use at your own risk.
